@@ -1,18 +1,68 @@
 const Employee = require('../models/EmployeeModel.js');
 
-exports.findAll = function(req, res) {
-    Employee.findAll(function(err, employee) {
-        console.log('controller')
+/**
+ * this method for get all employees from table
+ * @param req
+ * @param res
+ */
+exports.findAll = (req, res) => {
+    Employee.findAll((err, employee) => {
         if (err)
             res.send(err);
-        console.log('res', employee);
-        res.send(employee);
+
+        res.json({
+            status: true,
+            message:"success!",
+            data: employee,
+        });
     });
 };
 
-exports.create = function(req, res) {
-    const new_employee = new Employee(req.body);
+/**
+ * this method for create employee
+ * @param req
+ * @param res
+ */
+exports.create = (req, res) => {
+    const new_employee = new Employee(req.body.user);
 //handles null error
+    /*if(req.body.constructor === Object && Object.keys(req.body).length === 0)
+    {
+        res.status(400).send({
+            status: false,
+            message: 'Please provide all required field',
+            data: null,
+        });
+    }
+    else*/
+    {
+        Employee.create(new_employee, (err, employee) => {
+            if (err)
+                res.send(err);
+
+            res.json({
+                error: true,
+                message: "Employee added successfully!",
+                data: employee,
+            });
+        });
+    }
+};
+
+exports.findById = (req, res) => {
+    Employee.findById(req.params.id, (err, employee) => {
+        if (err)
+            res.send(err);
+
+        res.json({
+            status: true,
+            message:"success!",
+            data: employee,
+        });
+    });
+};
+
+exports.update = (req, res) => {
     if(req.body.constructor === Object && Object.keys(req.body).length === 0)
     {
         res.status(400).send({
@@ -22,44 +72,27 @@ exports.create = function(req, res) {
     }
     else
     {
-        Employee.create(new_employee, function(err, employee)
-        {
+        Employee.update(req.params.id, new Employee(req.body), (err, employee) => {
             if (err)
                 res.send(err);
 
             res.json({
-                error:false,
-                message:"Employee added successfully!",
-                data:employee,
+                status: true,
+                message: 'Employee successfully updated',
             });
         });
     }
 };
 
-exports.findById = function(req, res) {
-    Employee.findById(req.params.id, function(err, employee) {
+exports.delete = (req, res) => {
+    Employee.delete( req.params.id, (err, employee) => {
         if (err)
             res.send(err);
-        res.json(employee);
-    });
-};
 
-exports.update = function(req, res) {
-    if(req.body.constructor === Object && Object.keys(req.body).length === 0){
-        res.status(400).send({ error:true, message: 'Please provide all required field' });
-    }else{
-        Employee.update(req.params.id, new Employee(req.body), function(err, employee) {
-            if (err)
-                res.send(err);
-            res.json({ error:false, message: 'Employee successfully updated' });
+        res.json({
+            status: true,
+            message: 'Employee successfully deleted',
+            data: null,
         });
-    }
-};
-
-exports.delete = function(req, res) {
-    Employee.delete( req.params.id, function(err, employee) {
-        if (err)
-            res.send(err);
-        res.json({ error:false, message: 'Employee successfully deleted' });
     });
 };

@@ -1,16 +1,16 @@
 let mysql  = require('mysql');
 let config = require('./config.js');
 let con = mysql.createConnection(config);
-con.connect(function (err) {
-    if(!!err)
+con.connect((err) => {
+    if(!err)
     {
-        console.log(err);
+        console.log('DB Connection Success.');
     }
     else
     {
-        console.log('connected...!');
+        console.log('DB Connection failed \n Error : ' + JSON.stringify(err,undefined,2));
     }
 });
-con.end();
+/*con.end();*/
 
 module.exports = con;
