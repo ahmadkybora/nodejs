@@ -24,9 +24,9 @@ exports.findAll = (req, res) => {
  * @param res
  */
 exports.create = (req, res) => {
-    const new_employee = new Employee(req.body.user);
+    const new_employee = new Employee(req.body);
 //handles null error
-    /*if(req.body.constructor === Object && Object.keys(req.body).length === 0)
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0)
     {
         res.status(400).send({
             status: false,
@@ -34,7 +34,7 @@ exports.create = (req, res) => {
             data: null,
         });
     }
-    else*/
+    else
     {
         Employee.create(new_employee, (err, employee) => {
             if (err)
